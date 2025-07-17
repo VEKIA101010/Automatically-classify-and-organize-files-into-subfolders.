@@ -1,0 +1,41 @@
+import os
+import shutil
+
+folder_path = r"C:\Users\YourUsername\Downloads"
+
+file_types = {
+    "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
+    "Videos": [".mp4", ".mov", ".avi", ".mkv"],
+    "Documents": [".pdf", ".docx", ".txt", ".xlsx", ".pptx"],
+    "Installers": [".exe", ".msi", ".dmg", ".pkg", ".zip", ".rar"],
+}
+
+def make_folder(folder):
+    path = os.path.join(folder_path, folder)
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+def organize_folder():
+    for filename in os.listdir(folder_path):
+        file = os.path.join(folder_path, filename)
+
+        if os.path.isfile(file):
+            moved = False
+            ext = os.path.splitext(filename)[1].lower()
+
+            for folder, extensions in file_types.items():
+                if ext in extensions:
+                    make_folder(folder)
+                    shutil.move(file, os.path.join(folder_path, folder, filename))
+                    print(f"已移动 {filename} 到 {folder}/")
+                    moved = True
+                    break
+
+            if not moved:
+                make_folder("Others")
+                shutil.move(file, os.path.join(folder_path, "Others", filename))
+                print(f"已移动 {filename} 到 Others/")
+
+if __name__ == "__main__":
+    organize_folder()
+    print("✅ 整理完毕！")
